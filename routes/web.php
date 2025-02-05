@@ -9,6 +9,7 @@ use App\Models\ProfilDtps;
 use App\Models\ProfilDtpr;
 use App\Http\Controllers\ProfilDtpsController;
 use App\Http\Controllers\ProfilDtprController;
+use App\Http\Controllers\PoshtController;
 
 Route::get('/', function () {
     return view('home', ['title' => 'Home Page']);
@@ -18,14 +19,14 @@ Route::get('/posts', function () {
     // $posts= Post::with('author', 'category')->latest()->get();
     $posts = Post::latest()->get();
     return view('posts', [
-        'title' => 'Kriteria - LAM INFOKOM', 
-        'kriteria' => 
-            [
-                        'kriteria4' => 'Kriteria 4',
-                        'kriteria6' => 'Kriteria 6',
-            ],
-            
-                        
+        'title' => 'Kriteria - LAM INFOKOM',
+        'kriteria' =>
+        [
+            'kriteria4' => 'Kriteria 4',
+            'kriteria6' => 'Kriteria 6',
+        ],
+
+
         'nama' => 'MAANN',
         'posts' => $posts,
         'data4' => [
@@ -84,27 +85,27 @@ Route::get('/posts', function () {
                 'deskripsi' => 'Berisi mengenai data pengembangan dari setiap tenaga kependidikan',
                 'slug' => 'pengembangan-tenaga-kependidikan'
             ]
-            ],
+        ],
         'data6' => [
             [
                 'judul' => 'Dokumentasi Laboratorium Prodi Sistem Informasi',
                 'deskripsi' => 'Berisi mengenai data dokumentasi laboratorium',
-                'slug' => 'dok-laboratorium-si' 
+                'slug' => 'dok-laboratorium-si'
             ],
             [
                 'judul' => 'Modul Praktikum',
                 'deskripsi' => 'Berisi mengenai modul praktikum program studi',
-                'slug' => 'modul-praktikum' 
+                'slug' => 'modul-praktikum'
             ],
             [
                 'judul' => 'Survei Kepuasan Mahasiswa',
                 'deskripsi' => 'Berisi mengenai kepuasan mahasiswa program studi',
-                'slug' => 'survei-kepuasan-mhs' 
+                'slug' => 'survei-kepuasan-mhs'
             ],
             [
                 'judul' => 'Dokumentasi Rapat Penjaminan Mutu',
                 'deskripsi' => 'Berisi mengenai dokumentasi rapat penjaminan mutu program studi',
-                'slug' => 'dok-rapat-penjaminan-mutu' 
+                'slug' => 'dok-rapat-penjaminan-mutu'
             ],
             [
                 'judul' => 'Dokumen Penjaminan Mutu Internal',
@@ -304,12 +305,6 @@ Route::post('/profil-dtps', [ProfilDtpsController::class, 'store'])->name('profi
 Route::put('/profil-dtps/{id}', [ProfilDtpsController::class, 'update'])->name('profil-dtps.update');
 Route::delete('/profil-dtps/{id}', [ProfilDtpsController::class, 'destroy'])->name('profil-dtps.destroy');
 
-use App\Http\Controllers\PoshtController;
-
-Route::get('/ps', [PoshtController::class, 'index'])->name('ps.index');
-Route::post('/ps', [PoshtController::class, 'store'])->name('ps.store');
-Route::put('/ps/{post}', [PoshtController::class, 'update'])->name('ps.update');
-Route::delete('/ps/{post}', [PoshtController::class, 'destroy'])->name('ps.destroy');
 
 
 // Route::resource('/profil-dtps', [ProfilDtpsController::class]);
@@ -319,49 +314,25 @@ Route::get('/dokumen', function () {
 });
 
 Route::get('/posts/{post:slug}', function (Post $post) {
-    
+
     // $post = Post::find($id_kriteria);
-    
-    return view('post' , ['title' => $post->title , 'post' => $post]);
-}); 
 
-Route::get('/profil-dtps/{create:slug}', function (ProfilDtps $profilDtps) {    
-    $data = ProfilDtps::latest()->get();
-    
-    return view('profil-dtps/create', data: [
-        'title' => 'Profil DTPS', 
-        'data' => $data,
-    ]);
+    return view('post', ['title' => $post->title, 'post' => $post]);
 });
 
-Route::get('/profil-dtpr/{create:slug}', function (ProfilDtpr $profilDtpr) {    
-    $data = ProfilDtpr::latest()->get()->toArray();
-    return view('profil-dtpr/create', data: [
-        'title' => 'Profil DTPR',
-        'data' => $data,
-    ]);
-});
+
+// Dosen Profile Routing
+Route::get('profil-dtps/create', [ProfilDtpsController::class, 'create'])->name('profil-dosen.create');
 
 Route::get('/profil-dtpr/create', [ProfilDTPRController::class, 'create'])->name('profil-dtpr.create');
 
 Route::get('/authors/{user:username}', function (User $user) {
     // $post = $user->posts->load('author', 'category'); //lazy eager loading
-    return view('posts' , ['title' => count($user->posts) . ' Dokumen dari ' . $user->name, 'posts' => $user->posts , 'nama'=> 'mann']);
-}); 
+    return view('posts', ['title' => count($user->posts) . ' Dokumen dari ' . $user->name, 'posts' => $user->posts, 'nama' => 'mann']);
+});
 
 Route::get('/categories/{category:slug}', function (Category $category) {
     // $cat = $category->posts->load('author', 'category');
-    
-    return view('posts' , ['title' =>' Kriteria ' . $category->name, 'posts' => $category->posts , 'nama'=> 'mann']);
-}); 
 
-
-// Route::get('/profil_dtps/create', function () {
-//     return view('create', ['title' => 'Dokumen Pendukung']);
-// });
-
-//ProfilDTPS
-Route::get('profil-dtps/create', [ProfilDtpsController::class, 'create'])->name('profil-dtps.create');  
-// Route::post('profil_dtps/store.', [ProfilDtpsController::class, 'store'])->name('profil_dtps.store');
-
-// Route::get('/profil_dtps', [ProductController::class, 'index'])->name('products.index');
+    return view('posts', ['title' => ' Kriteria ' . $category->name, 'posts' => $category->posts, 'nama' => 'mann']);
+});

@@ -13,8 +13,8 @@ class ProfilDtpsController extends Controller
     public function index()
     {
         $data = ProfilDtps::all(); // Ambil semua data
-        
-    return view('/profil-dtps/create', compact('create'));
+
+        return view('/profil-dtps/create', compact('create'));
     }
 
     /**
@@ -22,8 +22,9 @@ class ProfilDtpsController extends Controller
      */
     public function create()
     {
+        $data = ProfilDtps::all();
         $title = 'Profil DTPS';
-        return view('profil-dtps.create', compact('title'));
+        return view('profil-dosen.create', compact('title', 'data'));
     }
 
     /**
@@ -31,12 +32,12 @@ class ProfilDtpsController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         $request->validate([
             'nama_dosen_dtps' => 'required|string|max:255',
             'nidn' => 'required|string|max:20|unique:profil_dtps',
             'ttl' => 'required|date',
-            'bukti_sertifikasi' => 'required|file|mimes:pdf,jpg,png|max:5048',
+            'bukti_sertifikasi' => 'required|file|mimes:pdf,jpg,png,doc,docx|max:5048',
         ]);
         $filePath = $request->file('bukti_sertifikasi')->store('sertifikatDTPS', 'public');
         ProfilDtps::create([
@@ -45,9 +46,8 @@ class ProfilDtpsController extends Controller
             'tanggal_lahir' => $request->ttl,
             'bukti_sertifikasi' => $filePath,
         ]);
-        
-        return redirect()->route('profil-dtps.create')->with('success', 'Data dosen berhasil ditambahkan!');
-        
+
+        return redirect()->route('profil-dosen.create')->with('success', 'Data dosen berhasil ditambahkan!');
     }
 
     /**
@@ -98,7 +98,7 @@ class ProfilDtpsController extends Controller
             'bukti_sertifikasi' => $validatedData['bukti_sertifikasi'],
         ]);
 
-        return redirect()->route('profil-dtps.create')->with('success', 'Data dosen berhasil diperbarui!');
+        return redirect()->route('profil-dosen.create')->with('success', 'Data dosen berhasil diperbarui!');
     }
 
 
