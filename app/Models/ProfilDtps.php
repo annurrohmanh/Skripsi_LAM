@@ -11,7 +11,7 @@ class ProfilDtps extends Model
 
     protected $table = 'profil_dtps';
     protected $fillable = [
-        'nama_dosen',
+        'nama_dosen_dtps',
         'nidn',
         'tanggal_lahir',
         'bukti_sertifikasi',

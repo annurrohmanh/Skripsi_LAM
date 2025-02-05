@@ -108,37 +108,30 @@
                     <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
                         <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th scope="col" class="px-4 py-3">NO</th>
-                                <th scope="col" class="px-4 py-3">Nama Dosen</th>
-                                <th scope="col" class="px-4 py-3">NIDN</th>
-                                <th scope="col" class="px-4 py-3">Tanggal Lahir</th>
-                                <th scope="col" class="px-4 py-3">Sertifikat</th>
-                                <th scope="col" class="px-4 py-3">Waktu Upload</th>
-                                <th scope="col" class="px-4 py-3">Waktu Update</th>
+                                @foreach (array_keys($data) as $key)
+                                    <th scope="col" class="px-4 py-3">{{ ucfirst($key) }}</th>
+                                @endforeach
                                 <th scope="col" class="px-4 py-3">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($data as $index => $item)
+                            @foreach ($data as $item)
                                 <tr class="border-b dark:border-gray-700">
-                                    <td class="px-4 py-3">{{ $index + 1 }}</td>
-                                    <td class="px-4 py-3">{{ $item['nama_dosen_dtps'] }}</td>
-                                    <td class="px-4 py-3">{{ $item['nidn'] }}</td>
-                                    <td class="px-4 py-3">{{ $item['tanggal_lahir'] }}</td>
-                                    <td class="px-4 py-3">
-                                        <a data-modal-value="{{ $item['bukti_sertifikasi'] }}"
-                                            class="cursor-pointer text-blue-600" data-modal-target="sertifikasi-modal"
-                                            data-modal-toggle="sertifikasi-modal">
-                                            Bukti Sertifikasi
-                                        </a>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        {{ \Carbon\Carbon::parse($item['created_at'])->format('Y-m-d H:i:s') }}</td>
-                                    <td class="px-4 py-3">
-                                        {{ \Carbon\Carbon::parse($item['updated_at'])->format('Y-m-d H:i:s') }}</td>
+                                    @foreach ($item as $key => $value)
+                                        <td class="px-4 py-3">
+                                            @if ($key === 'bukti_sertifikasi')
+                                                <a href="{{ $value }}" class="text-blue-600"
+                                                    target="_blank">Bukti Sertifikasi</a>
+                                            @elseif (in_array($key, ['created_at', 'updated_at']))
+                                                {{ \Carbon\Carbon::parse($value)->format('Y-m-d H:i:s') }}
+                                            @else
+                                                {{ $value }}
+                                            @endif
+                                        </td>
+                                    @endforeach
                                     <td class="flex items-center justify-end px-4 py-3">
-                                        <button id="dropdown-button-{{ $index }}"
-                                            data-dropdown-toggle="dropdown-menu-{{ $index }}"
+                                        <button id="apple-imac-27-dropdown-button"
+                                            data-dropdown-toggle="apple-imac-27-dropdown"
                                             class="inline-flex items-center rounded-lg p-0.5 text-center text-sm font-medium text-gray-500 hover:text-gray-800 focus:outline-none dark:text-gray-400 dark:hover:text-gray-100"
                                             type="button">
                                             <svg class="h-5 w-5" aria-hidden="true" fill="currentColor"
@@ -147,40 +140,30 @@
                                                     d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
                                             </svg>
                                         </button>
-                                        <div id="dropdown-menu-{{ $index }}"
+                                        <div id="apple-imac-27-dropdown"
                                             class="z-10 hidden w-44 divide-y divide-gray-100 rounded bg-white shadow dark:divide-gray-600 dark:bg-gray-700">
                                             <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
-                                                aria-labelledby="dropdown-button-{{ $index }}">
+                                                aria-labelledby="apple-imac-27-dropdown-button">
                                                 <li>
                                                     <a href="#"
-                                                        onclick="openEditModal('{{ $item['id'] }}', {
-                                                           nama_dosen_dtps: '{{ $item['nama_dosen_dtps'] }}',
-                                                           nidn: '{{ $item['nidn'] }}',
-                                                           ttl: '{{ $item['tanggal_lahir'] }}'
-                                                       })"
-                                                        data-modal-target="edit-modal" data-modal-toggle="edit-modal"
-                                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                        Edit
-                                                    </a>
+                                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Show</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#"
+                                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
                                                 </li>
                                             </ul>
                                             <div class="py-1">
-                                                <form action="{{ route('profil-dtps.destroy', $item->id) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button
-                                                        class="w-full justify-start px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                        onclick="return confirm('Yakin hapus?')">
-                                                        Delete
-                                                    </button>
-                                                </form>
+                                                <a href="#"
+                                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white">Delete</a>
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
+
+
                     </table>
                 </div>
                 <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0"
@@ -239,15 +222,16 @@
                     </ul>
                 </nav>
             </div>
-            {{-- modal tambah --}}
             <div id="crud-modal" tabindex="-1" aria-hidden="true"
                 class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0">
                 <div class="relative max-h-full w-full max-w-2xl p-4">
+                    <!-- Modal content -->
                     <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
+                        <!-- Modal header -->
                         <div
                             class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                <span id="modal-title">Tambah Data Dokumen</span>
+                                Tambah Data Dokumen
                             </h3>
                             <button type="button"
                                 class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
@@ -260,160 +244,47 @@
                                 <span class="sr-only">Close modal</span>
                             </button>
                         </div>
-                        <form id="crud-form" class="p-4 md:p-5" method="POST" action="/profil-dtps"
-                            enctype="multipart/form-data">
-                            @csrf
+                        <!-- Modal body -->
+                        <form class="p-4 md:p-5">
                             <div class="mb-4 grid grid-cols-2 gap-4">
                                 <div class="col-span-2">
-                                    <label for="nama_dosen_dtps"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama</label>
-                                    <input type="text" name="nama_dosen_dtps" id="nama_dosen_dtps_store"
-                                        class="@error('nama') border-red-500 @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                                        placeholder="Masukkan nama dosen" required>
-                                    @error('nama')
-                                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                                    @enderror
+                                    <label for="nama"
+                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">nama</label>
+                                    <input type="text" name="nama" id="nama"
+                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                                        placeholder="Type product nama" required="">
                                 </div>
-
-                                <div class="col-span-2">
-                                    <label for="nidn"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">NIDN</label>
-                                    <input type="text" name="nidn" id="nidn_store"
-                                        class="@error('nidn') border-red-500 @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                                        placeholder="Masukkan NIDN" required>
-                                    @error('nidn')
-                                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                                <div class="col-span-2">
-                                    <label for="ttl"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Tanggal
-                                        Lahir</label>
-                                    <input type="date" name="ttl" id="ttl_store"
-                                        class="@error('ttl') border-red-500 @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                                        required>
-                                    @error('ttl')
-                                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                                <div class="col-span-2">
-                                    <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                                        for="bukti_sertifikasi">Bukti Sertifikasi</label>
-                                    <input
-                                        class="@error('sertifikasi') border-red-500 @enderror block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
-                                        aria-describedby="file_input_help" id="bukti_sertifikasi_store"
-                                        name="bukti_sertifikasi" type="file"
-                                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.svg">
-                                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">
-                                        *MAX. 5Mb (Format: PDF, DOC, DOCX, JPG, JPEG)
-                                    </p>
-                                    @error('sertifikasi')
-                                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="flex justify-end space-x-4 p-4">
-                                <button type="button"
-                                    class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-500 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
-                                    data-modal-toggle="crud-modal">
-                                    Batal
-                                </button>
-                                <button type="submit"
-                                    class="inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                    Simpan
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            {{-- modal edit  --}}
-            <div id="edit-modal" tabindex="-1" aria-hidden="true"
-                class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0">
-                <div class="relative max-h-full w-full max-w-2xl p-4">
-                    <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
-                        <div
-                            class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                <span id="modal-title">Edit Data Dokumen</span>
-                            </h3>
-                            <button type="button"
-                                class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
-                                data-modal-toggle="edit-modal">
-                                <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 14 14">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                </svg>
-                                <span class="sr-only">Close modal</span>
-                            </button>
-                        </div>
-                        <form id="edit-form" class="p-4 md:p-5" method="POST"
-                            data-route="{{ route('profil-dtps.update', ':id') }}" enctype="multipart/form-data">
-                            @csrf
-
-                            <div id="method-update"></div>
-                            {{-- @method('put') --}}
-                            <div class="mb-4 grid grid-cols-2 gap-4">
-                                <div class="col-span-2">
-                                    <label for="nama_dosen_dtps"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama</label>
-                                    <input type="text" name="nama_dosen_dtps" id="nama_dosen_dtps"
-                                        class="@error('nama') border-red-500 @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                                        placeholder="Masukkan nama dosen" required>
-                                    @error('nama')
-                                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
                                 <div class="col-span-2">
                                     <label for="nidn"
                                         class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">NIDN</label>
                                     <input type="text" name="nidn" id="nidn"
-                                        class="@error('nidn') border-red-500 @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                                        placeholder="Masukkan NIDN" required>
-                                    @error('nidn')
-                                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                                    @enderror
+                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                                        placeholder="Type product name" required="">
                                 </div>
-
                                 <div class="col-span-2">
                                     <label for="ttl"
                                         class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Tanggal
                                         Lahir</label>
                                     <input type="date" name="ttl" id="ttl"
-                                        class="@error('ttl') border-red-500 @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                                        required>
-                                    @error('ttl')
-                                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                                    @enderror
+                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                                        placeholder="Type product name" required="">
                                 </div>
-
                                 <div class="col-span-2">
+
                                     <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                                        for="bukti_sertifikasi">Bukti Sertifikasi</label>
+                                        for="file_input">Bukti Sertifikasi</label>
                                     <input
-                                        class="@error('sertifikasi') border-red-500 @enderror block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
-                                        aria-describedby="file_input_help" id="bukti_sertifikasi"
-                                        name="bukti_sertifikasi" type="file"
-                                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.svg">
+                                        class="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
+                                        aria-describedby="file_input_help" id="file_input" type="file">
                                     <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">
-                                        *MAX. 5Mb (Format: PDF, DOC, DOCX, JPG, JPEG)
-                                    </p>
-                                    @error('sertifikasi')
-                                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                                    @enderror
+                                        *MAX. 5Mb.</p>
+
                                 </div>
                             </div>
-
                             <div class="flex justify-end space-x-4 p-4">
                                 <button type="button"
                                     class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-500 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
-                                    data-modal-toggle="edit-modal">
-                                    Batal
+                                    data-modal-toggle="crud-modal"> Batal
                                 </button>
                                 <button type="submit"
                                     class="inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
@@ -424,69 +295,6 @@
                     </div>
                 </div>
             </div>
-            <div id="sertifikasi-modal" tabindex="-1" aria-hidden="true"
-                class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0">
-                <div class="relative max-h-full w-full max-w-2xl p-4">
-                    <!-- Modal content -->
-                    <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
-                        <!-- Modal header -->
-                        <div class="flex items-center justify-between p-4 md:p-5">
-                            <button type="button"
-                                class="end-2.5 ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
-                                data-modal-hide="sertifikasi-modal">
-                                <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 14 14">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                </svg>
-                                <span class="sr-only">Close modal</span>
-                            </button>
-                        </div>
-                        <!-- Modal body -->
-                        <div class="p-4 md:p-5">
-                            <img id="modal-image" src="" alt="Sertifikasi Image" class="h-auto w-full">
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
-    <script>
-        function openEditModal(id, data) {
-            console.log(id, data);
-
-            // Mengubah judul modal
-            document.getElementById('modal-title').textContent = 'Edit Data Dokumen';
-
-            // Mengubah action form
-            const form = document.getElementById('edit-form');
-            let route = form.getAttribute('data-route').replace(':id', id);
-            form.action = route;
-
-
-            // Menambahkan method PUT untuk update
-            const methodField = document.getElementById('method-update');
-            methodField.innerHTML = '@method('PUT')';
-
-            // Mengisi data ke form
-            document.getElementById('nama_dosen_dtps').value = data.nama_dosen_dtps;
-            document.getElementById('nidn').value = data.nidn;
-            document.getElementById('ttl').value = data.ttl;
-        }
-        document.addEventListener('DOMContentLoaded', function() {
-            // Dapatkan semua link yang membuka modal
-            const links = document.querySelectorAll('[data-modal-target="sertifikasi-modal"]');
-            const modalImage = document.getElementById('modal-image');
-
-            links.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    // Ambil value dari data-modal-value
-                    const imageValue = this.getAttribute('data-modal-value');
-                    // Update src gambar dalam modal
-                    modalImage.src = `/storage/${imageValue}`;
-                });
-            });
-        });
-    </script>
 </x-layout>

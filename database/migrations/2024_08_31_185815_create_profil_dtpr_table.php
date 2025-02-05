@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('profil_dtps', function (Blueprint $table) {
+        Schema::create('profil_dtpr', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_dosen_dtps');
+            $table->string('nama_dosen_dtpr');
             $table->string('nidn')->unique();
             $table->string('tanggal_lahir');
             $table->string('bukti_sertifikasi');
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('profil_dtps');
+        Schema::dropIfExists('profil_dtpr');
     }
 };

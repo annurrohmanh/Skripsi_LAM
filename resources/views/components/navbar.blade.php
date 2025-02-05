@@ -10,7 +10,6 @@
                         <div class="ml-10 flex items-baseline space-x-4">
                             <x-nav-link href="/" :active="request()->is('/')">Home</x-nav-link>
                             <x-nav-link href="/posts" :active="request()->is('posts')">Dokumen Pendukung</x-nav-link>
-                            <x-nav-link href="/profil_dtps/create" :active="request()->is('create')">ppp</x-nav-link>
                         </div>
                     </div>
                 </div>
