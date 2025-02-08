@@ -1,7 +1,3 @@
-{{-- @extends('components.layout')
-@section('content')
-@section('title', 'Profil DTPS') --}}
-
 <x-layout>
     <x-slot:title>{{ $title }}</x-slot:title>
     <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
@@ -9,8 +5,8 @@
         <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
             <div class="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
                 <div class="w-full md:w-1/2">
-                    <form class="flex items-center">
-                        <label for="simple-search" class="sr-only">Search</label>
+                    <form class="flex items-center" id="search-form">
+                        <label for="search" class="sr-only">Search</label>
                         <div class="relative w-full">
                             <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                                 <svg aria-hidden="true" class="h-5 w-5 text-gray-500 dark:text-gray-400"
@@ -20,15 +16,15 @@
                                         clip-rule="evenodd" />
                                 </svg>
                             </div>
-                            <input type="text" id="simple-search"
+                            <input type="search" id="search" name="search"
                                 class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                                placeholder="Search" required="">
+                                placeholder="Search" autocomplete="off">
                         </div>
                     </form>
                 </div>
                 <div
                     class="flex w-full flex-shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
-                    <button onclick="openModal(null, {}, 'store')" data-modal-target="crud-modal"
+                    <button onclick="openModal(null, {}, 'store', '{{ $slug }}')" data-modal-target="crud-modal"
                         data-modal-toggle="crud-modal" type="button"
                         class="flex items-center justify-center rounded-lg bg-primary-700 px-4 py-2 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                         <svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewbox="0 0 20 20"
@@ -103,6 +99,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Table Data-->
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
                     <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
@@ -121,7 +119,7 @@
                         @foreach ($data as $index => $item)
                             <tr class="border-b dark:border-gray-700">
                                 <td class="px-4 py-3">{{ $index + 1 }}</td>
-                                <td class="px-4 py-3">{{ $item['nama_dosen_dtps'] }}</td>
+                                <td class="px-4 py-3">{{ $item['nama_dosen_' . $slug] }}</td>
                                 <td class="px-4 py-3">{{ $item['nidn'] }}</td>
                                 <td class="px-4 py-3">{{ $item['tanggal_lahir'] }}</td>
                                 <td class="px-4 py-3">
@@ -151,12 +149,12 @@
                                         <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
                                             aria-labelledby="dropdown-button-{{ $index }}">
                                             <li>
-                                                <a href="#"
-                                                    onclick="openModal('{{ $item['id'] }}', {
-                                                    nama_dosen_dtps: '{{ $item['nama_dosen_dtps'] }}',
+                                                <a onclick="openModal('{{ $item['id'] }}', {
+                                                    nama_dosen_{{ $slug }}: '{{ $item['nama_dosen_' . $slug] }}',
                                                     nidn: '{{ $item['nidn'] }}',
-                                                    ttl: '{{ $item['tanggal_lahir'] }}', fileUrl: '{{ $item['bukti_sertifikasi'] }}'
-                                                }, 'update')"
+                                                    ttl: '{{ $item['tanggal_lahir'] }}',
+                                                    fileUrl: '{{ $item['bukti_sertifikasi'] }}'
+                                                }, 'update', '{{ $slug }}')"
                                                     data-modal-target="crud-modal" data-modal-toggle="crud-modal"
                                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                                     Edit
@@ -182,88 +180,40 @@
                     </tbody>
                 </table>
             </div>
-            <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0"
-                aria-label="Table navigation">
-                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    Showing
-                    <span class="font-semibold text-gray-900 dark:text-white">1-10</span>
-                    of
-                    <span class="font-semibold text-gray-900 dark:text-white">1000</span>
-                </span>
-                <ul class="inline-flex items-stretch -space-x-px">
-                    <li>
-                        <a href="#"
-                            class="ml-0 flex h-full items-center justify-center rounded-l-lg border border-gray-300 bg-white px-3 py-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                            <span class="sr-only">Previous</span>
-                            <svg class="h-5 w-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="flex items-center justify-center border border-gray-300 bg-white px-3 py-2 text-sm leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="flex items-center justify-center border border-gray-300 bg-white px-3 py-2 text-sm leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
-                    </li>
-                    <li>
-                        <a href="#" aria-current="page"
-                            class="z-10 flex items-center justify-center border border-primary-300 bg-primary-50 px-3 py-2 text-sm leading-tight text-primary-600 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">3</a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="flex items-center justify-center border border-gray-300 bg-white px-3 py-2 text-sm leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">...</a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="flex items-center justify-center border border-gray-300 bg-white px-3 py-2 text-sm leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">100</a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="flex h-full items-center justify-center rounded-r-lg border border-gray-300 bg-white px-3 py-1.5 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                            <span class="sr-only">Next</span>
-                            <svg class="h-5 w-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </a>
-                    </li>
-                </ul>
+            <nav class="p-4" id="pagination">
+                {{ $data->links() }}
             </nav>
         </div>
-        <div id="sertifikasi-modal" tabindex="-1" aria-hidden="true"
-            class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0">
-            <div class="relative max-h-full w-full max-w-2xl p-4">
-                <!-- Modal content -->
-                <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
-                    <!-- Modal header -->
-                    <div class="flex items-center justify-between p-4 md:p-5">
-                        <button type="button"
-                            class="end-2.5 ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
-                            data-modal-hide="sertifikasi-modal">
-                            <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 14 14">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                            </svg>
-                            <span class="sr-only">Close modal</span>
-                        </button>
-                    </div>
-                    <!-- Modal body -->
-                    <div class="p-4 md:p-5">
-                        <img id="modal-image" src="" alt="Sertifikasi Image" class="h-auto w-full">
-                    </div>
+
+    </div>
+
+    <!-- Sertifikasi Modal -->
+    <div id="sertifikasi-modal" tabindex="-1" aria-hidden="true"
+        class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0">
+        <div class="relative max-h-full w-full max-w-2xl p-4">
+            <!-- Modal content -->
+            <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5">
+                    <button type="button"
+                        class="end-2.5 ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+                        data-modal-hide="sertifikasi-modal">
+                        <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="p-4 md:p-5">
+                    <div id="modal-preview-container" class="w-full h-[500px]"></div>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- CRUD Modal -->
     <div id="crud-modal" tabindex="-1" aria-hidden="true"
@@ -298,11 +248,12 @@
                         <div class="space-y-4">
                             <!-- Nama Field -->
                             <div>
-                                <label for="nama_dosen_dtps"
+                                <label for="nama_dosen_{{ $slug }}"
                                     class="block text-sm font-medium text-gray-900 dark:text-white">
                                     Nama
                                 </label>
-                                <input type="text" name="nama_dosen_dtps" id="nama_dosen_dtps"
+                                <input type="text" name="nama_dosen_{{ $slug }}"
+                                    id="nama_dosen_{{ $slug }}"
                                     class="mt-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-500 @error('nama') border-red-500 @enderror"
                                     placeholder="Masukkan nama dosen" required>
                                 @error('nama')
@@ -361,16 +312,11 @@
                                 Preview will appear here
                             </div>
 
-                            <!-- Image Preview -->
-                            <div class="mt-4 flex-1 hidden" id="image-preview">
-                                <img id="modal-image" src="" alt="Sertifikasi Image"
-                                    class="max-h-72 w-full rounded-lg object-scale-down">
-                            </div>
-
-                            <!-- PDF Preview -->
-                            <div class="file-preview-container mt-4 flex-1 hidden" id="pdf-preview">
+                            <!-- Preview Doc container -->
+                            <div class="file-preview-container mt-4 flex-1 hidden" id="file-preview-container">
                                 <iframe id="file-preview" src="" class="w-full h-full border-none"></iframe>
                             </div>
+
                         </div>
                     </div>
 
@@ -395,177 +341,258 @@
 
 
     <script>
-        // Function to open form CRUD modal
-        function openModal(id, data, method) {
-            const form = document.getElementById('crud-form');
-            const modalImageDiv = document.getElementById('image-preview');
-            const modalImage = document.getElementById('modal-image');
-            const fileInput = document.getElementById('bukti_sertifikasi');
-            const filePreviewContainer = document.getElementById('pdf-preview');
-            const filePreview = document.getElementById('file-preview');
-            const previewLabel = document.getElementById('preview-label');
-            const links = document.querySelectorAll('[data-modal-target="sertifikasi-modal"]');
+        // File type constants
+        const SUPPORTED_FILE_TYPES = {
+            IMAGE: ['jpg', 'jpeg', 'png'],
+            PDF: ['pdf'],
+            DOCUMENT: ['doc', 'docx']
+        };
 
-            let route;
-            let form_method;
+        const ROUTES = {
+            'dtps': {
+                store: "{{ route('profil-dtps.store') }}",
+                update: (id) => "{{ route('profil-dtps.update', ':id') }}".replace(':id', id)
+            },
+            'dtpr': {
+                store: "{{ route('profil-dtpr.store') }}",
+                update: (id) => "{{ route('profil-dtpr.update', ':id') }}".replace(':id', id)
+            }
+        };
 
-            // Reset form dan semua preview elements
-            form.reset();
-            modalImage.src = '';
-            filePreview.src = '';
-            modalImageDiv.classList.add('hidden');
-            filePreviewContainer.classList.add('hidden');
-            previewLabel.classList.remove('hidden');
-
-            // Tentukan route dan method berdasarkan method (store atau update)
-            if (method === 'store') {
-                route = "{{ route('profil-dtps.store') }}";
-                form_method = 'POST';
-            } else {
-                route = "{{ route('profil-dtps.update', ':id') }}".replace(':id', id);
-                form_method = 'PUT';
+        // File preview handler class
+        class FilePreviewHandler {
+            constructor(options = {}) {
+                this.previewContainer = options.previewContainer;
+                this.previewLabel = options.previewLabel;
+                this.defaultHeight = options.height || '50vh';
             }
 
-            // Set route untuk form
-            form.setAttribute("data-route", route);
-            form.setAttribute("action", route);
-
-            // Set method input field
-            form.querySelector('input[name="_method"]').value = form_method;
-
-            // Mengubah judul modal jika method update
-            if (method === 'update') {
-                document.getElementById('modal-title').textContent = 'Edit Data Dokumen';
-
-                // Mengisi data form
-                document.getElementById('nama_dosen_dtps').value = data.nama_dosen_dtps;
-                document.getElementById('nidn').value = data.nidn;
-                document.getElementById('ttl').value = data.ttl;
-
-                // Set filename in file input
-                const dataTransfer = new DataTransfer();
-                const fileName = data.fileUrl.split('/').pop();
-                const file = new File([''], fileName, {
-                    type: 'application/octet-stream',
-                });
-                dataTransfer.items.add(file);
-                fileInput.files = dataTransfer.files;
-
-                const fileType = data.fileUrl.split('.').pop().toLowerCase();
-                const fileUrl = `/storage/${data.fileUrl}`;
-                previewLabel.classList.add('hidden');
-
-                if (['jpg', 'jpeg', 'png', 'svg'].includes(fileType)) {
-                    modalImage.src = fileUrl;
-                    modalImageDiv.classList.remove('hidden');
-                    filePreviewContainer.classList.add('hidden');
-                } else if (fileType === 'pdf') {
-                    filePreview.src = fileUrl;
-                    filePreviewContainer.classList.remove('hidden');
-                    modalImageDiv.classList.add('hidden');
+            // Clear preview container
+            clearPreview() {
+                if (this.previewContainer) {
+                    this.previewContainer.innerHTML = '';
+                    this.previewContainer.classList.add('hidden');
+                }
+                if (this.previewLabel) {
+                    this.previewLabel.classList.remove('hidden');
                 }
             }
 
-            // Event listener untuk preview gambar atau PDF
-            fileInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
+            // Show preview container
+            showPreview() {
+                this.previewContainer.classList.remove('hidden');
+                if (this.previewLabel) {
+                    this.previewLabel.classList.add('hidden');
+                }
+            }
 
-                if (file) {
-                    // Reset semua preview elements
-                    modalImage.src = '';
-                    filePreview.src = '';
-                    modalImageDiv.classList.add('hidden');
-                    filePreviewContainer.classList.add('hidden');
-                    previewLabel.classList.add('hidden');
+            // Create image preview
+            createImagePreview(src) {
+                const img = document.createElement('img');
+                img.src = src;
+                img.className = `max-h-[${this.defaultHeight}] w-full object-scale-down`;
+                return img;
+            }
 
-                    const fileType = file.type;
+            // Create PDF preview
+            createPDFPreview(src) {
+                const iframe = document.createElement('iframe');
+                iframe.src = src;
+                iframe.className = 'w-full h-[500px] border-none';
+                return iframe;
+            }
 
-                    if (fileType.startsWith('image/')) {
-                        const reader = new FileReader();
-                        reader.onload = function(event) {
-                            modalImage.src = event.target.result;
-                            modalImageDiv.classList.remove('hidden');
-                        };
-                        reader.readAsDataURL(file);
-                    } else if (fileType === 'application/pdf') {
-                        const objectURL = URL.createObjectURL(file);
-                        filePreview.src = objectURL;
-                        filePreviewContainer.classList.remove('hidden');
-                    } else if (fileType ===
-                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-                        fileType === 'application/msword') {
-                        const reader = new FileReader();
+            // Create download button
+            createDownloadButton(fileUrl) {
+                const button = document.createElement('a');
+                button.href = fileUrl;
+                button.className = 'p-3 rounded-md bg-blue-600 text-white';
+                button.textContent = 'Download File';
+                button.target = '_blank';
+                return button;
+            }
 
-                        reader.onload = function(event) {
-                            const arrayBuffer = event.target.result;
+            // Handle DOCX preview
+            async handleDocxPreview(arrayBuffer) {
+                try {
+                    await docx.renderAsync(arrayBuffer, this.previewContainer, null, {
+                        inWrapper: false,
+                        ignoreWidth: true,
+                        ignoreHeight: true,
+                        ignoreFonts: false,
+                        breakPages: false,
+                        useBase64URL: false
+                    });
 
-                            // Pastikan kontainer kosong sebelum me-render dokumen baru
-                            filePreviewContainer.innerHTML = "";
+                    const docContainer = this.previewContainer.querySelector('.docx');
+                    if (docContainer) {
+                        Object.assign(docContainer.style, {
+                            padding: '15pt',
+                            height: '65vh',
+                            overflowY: 'scroll',
+                            border: '1px solid #ccc'
+                        });
 
-                            // Render DOCX ke dalam filePreviewContainer
-                            docx.renderAsync(arrayBuffer, filePreviewContainer, null, {
-                                    inWrapper: false, // Bungkus konten dengan div
-                                    ignoreWidth: true, // Abaikan lebar dokumen asli
-                                    ignoreHeight: true, // Abaikan tinggi dokumen asli
-                                    ignoreFonts: false, // Jangan pakai font asli dokumen
-                                    breakPages: false, // Jika false, dokumen tidak akan dibagi per halaman
-                                    useBase64URL: false, // Tidak perlu base64 untuk gambar
-                                })
-                                .then(() => {
-                                    console.log("DOCX Rendered");
-
-                                    // Terapkan style pada elemen 'docx' setelah rendering selesai
-                                    const docContainer = filePreviewContainer.getElementsByClassName(
-                                        "docx")[0];
-                                    if (docContainer) {
-                                        docContainer.style.padding = "15pt"; // Beri padding
-                                        docContainer.style.height = "50vh"; // Set tinggi container
-                                        docContainer.style.overflowY = "scroll"; // Aktifkan scroll vertical
-                                        docContainer.style.border = "1px solid #ccc"; // Beri border
-                                    }
-
-                                    // Terapkan style pada semua elemen <span> di dalam .docx
-                                    const spans = docContainer.querySelectorAll("span");
-                                    spans.forEach((span) => {
-                                        span.style.fontSize = "9px"; // Ubah ukuran font
-                                    });
-                                })
-                                .catch((err) => {
-                                    console.error("DOCX Error:", err);
-                                    // Tampilkan pesan error ke pengguna
-                                    alert("Gagal merender dokumen. Silakan coba file lain.");
-                                });
-                        };
-
-
-
-                        reader.readAsArrayBuffer(file);
-
-                        filePreviewContainer.classList.remove('hidden');
-                        modalImageDiv.classList.add('hidden');
-                    } else {
-                        alert("Format file tidak didukung. Harap pilih file gambar atau PDF.");
-                        previewLabel.classList.remove('hidden');
+                        docContainer.querySelectorAll('span').forEach(span => {
+                            span.style.fontSize = '9px';
+                        });
                     }
+                } catch (error) {
+                    throw new Error('Failed to render DOCX preview');
                 }
-            });
+            }
+
+            // Main preview method
+            async preview(file, fileUrl) {
+                this.clearPreview();
+
+                const fileType = (file?.name || fileUrl).split('.').pop().toLowerCase();
+                const source = fileUrl || URL.createObjectURL(file);
+
+                try {
+                    this.showPreview();
+
+                    if (SUPPORTED_FILE_TYPES.IMAGE.includes(fileType)) {
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                this.previewContainer.appendChild(this.createImagePreview(e.target.result));
+                            };
+                            reader.readAsDataURL(file);
+                        } else {
+                            this.previewContainer.appendChild(this.createImagePreview(source));
+                        }
+                    } else if (SUPPORTED_FILE_TYPES.PDF.includes(fileType)) {
+                        this.previewContainer.appendChild(this.createPDFPreview(source));
+                    } else if (SUPPORTED_FILE_TYPES.DOCUMENT.includes(fileType)) {
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = async (e) => {
+                                try {
+                                    await this.handleDocxPreview(e.target.result);
+                                } catch (error) {
+                                    this.previewContainer.appendChild(this.createDownloadButton(source));
+                                }
+                            };
+                            reader.readAsArrayBuffer(file);
+                        } else {
+                            try {
+                                const response = await fetch(source);
+                                if (!response.ok) throw new Error('Network response was not ok');
+                                const arrayBuffer = await response.arrayBuffer();
+                                await this.handleDocxPreview(arrayBuffer);
+                            } catch (error) {
+                                this.previewContainer.appendChild(this.createDownloadButton(source));
+                            }
+                        }
+                    } else {
+                        throw new Error('Unsupported file format');
+                    }
+                } catch (error) {
+                    console.error('Preview error:', error);
+                    this.previewContainer.innerHTML =
+                        '<p class="text-red-500 text-center">Format file tidak didukung atau gagal memuat preview.</p>';
+                }
+            }
         }
 
+        // Initialize preview handlers
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById("sertifikasi-modal");
+            if (modal) {
+                new Modal(modal);
+            }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // Dapatkan semua link yang membuka modal
-            const links = document.querySelectorAll('[data-modal-target="sertifikasi-modal"]');
-            const modalImage = document.getElementById('modal-image');
+            // Initialize modal preview
+            const modalPreview = new FilePreviewHandler({
+                previewContainer: document.querySelector('#modal-preview-container')
+            });
 
-            links.forEach(link => {
-                link.addEventListener('click', function(e) {
+            // Initialize form preview
+            const formPreview = new FilePreviewHandler({
+                previewContainer: document.getElementById('file-preview-container'),
+                previewLabel: document.getElementById('preview-label')
+            });
+
+            // Handle modal preview links
+            document.querySelectorAll('[data-modal-target="sertifikasi-modal"]').forEach(link => {
+                link.addEventListener('click', (e) => {
                     e.preventDefault();
-                    // Ambil value dari data-modal-value
-                    const imageValue = this.getAttribute('data-modal-value');
-                    // Update src gambar dalam modal
-                    modalImage.src = `/storage/${imageValue}`;
+                    const fileUrl = link.getAttribute('data-modal-value');
+                    modalPreview.preview(null, `/storage/${fileUrl}`);
+
+                    // Fix: Get modal by ID instead of closest class
+                    const modal = document.getElementById('sertifikasi-modal');
+                    if (modal) {
+                        modal.classList.remove('hidden');
+                    }
                 });
             });
+
+            // Handle file input change
+            document.getElementById('bukti_sertifikasi')?.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    formPreview.preview(file);
+                }
+            });
+
+            // Expose the openModal function globally
+            window.openModal = function(id, data, method, slug) {
+                const form = document.getElementById('crud-form');
+                const fileInput = document.getElementById('bukti_sertifikasi');
+                let route, form_method;
+
+                // Reset form and preview
+                form.reset();
+                formPreview.clearPreview();
+
+                // Set route and method based on slug and operation type
+                try {
+                    if (!ROUTES[slug]) {
+                        throw new Error(`Invalid slug: ${slug}`);
+                    }
+
+                    route = method === 'store' ?
+                        ROUTES[slug].store :
+                        ROUTES[slug].update(id);
+                    form_method = method === 'store' ? 'POST' : 'PUT';
+
+                    // Set modal title
+                    document.getElementById('modal-title').textContent =
+                        method === 'store' ? 'Tambah Data Dokumen' : 'Edit Data Dokumen';
+
+                    if (method === 'update') {
+                        // Fill form with existing data
+                        document.getElementById('nama_dosen_' + slug).value = data['nama_dosen_' + slug];
+                        document.getElementById('nidn').value = data.nidn;
+                        document.getElementById('ttl').value = data.ttl;
+
+                        // Handle file input
+                        if (data.fileUrl) {
+                            const dataTransfer = new DataTransfer();
+                            const fileName = data.fileUrl.split('/').pop();
+                            const file = new File([''], fileName, {
+                                type: 'application/octet-stream'
+                            });
+                            dataTransfer.items.add(file);
+                            fileInput.files = dataTransfer.files;
+
+                            // Show file preview
+                            formPreview.preview(null, `/storage/${data.fileUrl}`);
+                        }
+                    }
+
+                    // Set form attributes
+                    form.setAttribute('data-route', route);
+                    form.setAttribute('action', route);
+                    form.querySelector('input[name="_method"]').value = form_method;
+
+                } catch (error) {
+                    console.error('Error in openModal:', error);
+                    alert('Terjadi kesalahan saat membuka modal. Silakan coba lagi.');
+                }
+            };
         });
     </script>
 </x-layout>

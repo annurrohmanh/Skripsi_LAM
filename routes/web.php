@@ -300,10 +300,16 @@ Route::get('/posts', function () {
         ]
     ]);
 });
-//  update
+
+
+//  CRUD Profil Dosen
 Route::post('/profil-dtps', [ProfilDtpsController::class, 'store'])->name('profil-dtps.store');
 Route::put('/profil-dtps/{id}', [ProfilDtpsController::class, 'update'])->name('profil-dtps.update');
 Route::delete('/profil-dtps/{id}', [ProfilDtpsController::class, 'destroy'])->name('profil-dtps.destroy');
+
+Route::post('/profil-dtpr', [ProfilDtprController::class, 'store'])->name('profil-dtpr.store');
+Route::put('/profil-dtpr/{id}', [ProfilDtprController::class, 'update'])->name('profil-dtpr.update');
+Route::delete('/profil-dtpr/{id}', [ProfilDtprController::class, 'destroy'])->name('profil-dtpr.destroy');
 
 
 
@@ -322,8 +328,7 @@ Route::get('/posts/{post:slug}', function (Post $post) {
 
 
 // Dosen Profile Routing
-Route::get('profil-dtps/create', [ProfilDtpsController::class, 'create'])->name('profil-dosen.create');
-
+Route::get('/profil-dtps/create', [ProfilDtpsController::class, 'create'])->name('profil-dtps.create');
 Route::get('/profil-dtpr/create', [ProfilDTPRController::class, 'create'])->name('profil-dtpr.create');
 
 Route::get('/authors/{user:username}', function (User $user) {
