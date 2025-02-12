@@ -20,14 +20,14 @@ Route::get('/posts', function () {
     // $posts= Post::with('author', 'category')->latest()->get();
     $posts = Post::latest()->get();
     return view('posts', [
-        'title' => 'Kriteria - LAM INFOKOM', 
-        'kriteria' => 
-            [
-                        'kriteria4' => 'Kriteria 4',
-                        'kriteria6' => 'Kriteria 6',
-            ],
-            
-                        
+        'title' => 'Kriteria - LAM INFOKOM',
+        'kriteria' =>
+        [
+            'kriteria4' => 'Kriteria 4',
+            'kriteria6' => 'Kriteria 6',
+        ],
+
+
         'nama' => 'MAANN',
         'posts' => $posts,
         'data4' => [
@@ -86,27 +86,27 @@ Route::get('/posts', function () {
                 'deskripsi' => 'Berisi mengenai data pengembangan dari setiap tenaga kependidikan',
                 'slug' => 'pengembangan-tenaga-kependidikan'
             ]
-            ],
+        ],
         'data6' => [
             [
                 'judul' => 'Dokumentasi Laboratorium Prodi Sistem Informasi',
                 'deskripsi' => 'Berisi mengenai data dokumentasi laboratorium',
-                'slug' => 'dok-laboratorium-si' 
+                'slug' => 'dok-laboratorium-si'
             ],
             [
                 'judul' => 'Modul Praktikum',
                 'deskripsi' => 'Berisi mengenai modul praktikum program studi',
-                'slug' => 'modul-praktikum' 
+                'slug' => 'modul-praktikum'
             ],
             [
                 'judul' => 'Survei Kepuasan Mahasiswa',
                 'deskripsi' => 'Berisi mengenai kepuasan mahasiswa program studi',
-                'slug' => 'survei-kepuasan-mhs' 
+                'slug' => 'survei-kepuasan-mhs'
             ],
             [
                 'judul' => 'Dokumentasi Rapat Penjaminan Mutu',
                 'deskripsi' => 'Berisi mengenai dokumentasi rapat penjaminan mutu program studi',
-                'slug' => 'dok-rapat-penjaminan-mutu' 
+                'slug' => 'dok-rapat-penjaminan-mutu'
             ],
             [
                 'judul' => 'Dokumen Penjaminan Mutu Internal',
@@ -301,46 +301,35 @@ Route::get('/posts', function () {
         ]
     ]);
 });
-Route::get('/posts/{post:slug}', function (Post $post) {
-    
-    // $post = Post::find($id_kriteria);
-    
-    return view('post' , ['title' => $post->title , 'post' => $post]);
-}); 
 
-//ProfilDTPS
-Route::get('/profil-dtps/{create:slug}', function (ProfilDtps $profilDtps) {    
-    $data = ProfilDtps::latest()->get();
-    
-    return view('profil-dtps/create', data: [
-        'title' => 'Profil DTPS', 
-        'data' => $data,
-    ]);
-});
-// create 
+
+//  CRUD Profil Dosen
+Route::get('/profil-dtps/create', [ProfilDtpsController::class, 'create'])->name('profil-dtps.create');
 Route::post('/profil-dtps', [ProfilDtpsController::class, 'store'])->name('profil-dtps.store');
-// update
 Route::put('/profil-dtps/{id}', [ProfilDtpsController::class, 'update'])->name('profil-dtps.update');
-// delete
 Route::delete('/profil-dtps/{id}', [ProfilDtpsController::class, 'destroy'])->name('profil-dtps.destroy');
 
-// profilDTPR
 Route::get('/profil-dtpr/create', [ProfilDTPRController::class, 'create'])->name('profil-dtpr.create');
+Route::post('/profil-dtpr', [ProfilDtprController::class, 'store'])->name('profil-dtpr.store');
+Route::put('/profil-dtpr/{id}', [ProfilDtprController::class, 'update'])->name('profil-dtpr.update');
+Route::delete('/profil-dtpr/{id}', [ProfilDtprController::class, 'destroy'])->name('profil-dtpr.destroy');
 
 
-Route::get('/profil-dtpr/{create:slug}', function (ProfilDtpr $profilDtpr) {    
-    $data = ProfilDtpr::latest()->get();
-    return view('profil-dtpr/create', data: [
-        'title' => 'Profil DTPR',
-        'data' => $data,
-    ]);
+Route::get('/dokumen', function () {
+    return view('dokumen', ['title' => 'Dokumen Pendukung', 'nama' => 'maman']);
+});
+
+Route::get('/posts/{post:slug}', function (Post $post) {
+
+    // $post = Post::find($id_kriteria);
+
+    return view('post', ['title' => $post->title, 'post' => $post]);
 });
 
 // Riwayat Pendidikan
-
-Route::get('/riwayat-pendidikan/{create:slug}', function (RiwayatPend $RiwayatPend) {    
+Route::get('/riwayat-pendidikan/{create:slug}', function (RiwayatPend $RiwayatPend) {
     // $data = RiwayatPend::latest()->get();
-    
+
     return view('riwayat-pendidikan/create', data: [
         'title' => 'Riwayat Pendidikan'
         // 'data' => $data,
@@ -356,15 +345,13 @@ Route::put('/riwayat-pendidikan/{id}', [RiwayatPendController::class, 'update'])
 Route::delete('/riwayat-pendidikan/{id}', [RiwayatPendController::class, 'destroy'])->name('riwayat-pendidikan.destroy');
 
 
-
-
 Route::get('/authors/{user:username}', function (User $user) {
     // $post = $user->posts->load('author', 'category'); //lazy eager loading
-    return view('posts' , ['title' => count($user->posts) . ' Dokumen dari ' . $user->name, 'posts' => $user->posts , 'nama'=> 'mann']);
-}); 
+    return view('posts', ['title' => count($user->posts) . ' Dokumen dari ' . $user->name, 'posts' => $user->posts, 'nama' => 'mann']);
+});
 
 Route::get('/categories/{category:slug}', function (Category $category) {
     // $cat = $category->posts->load('author', 'category');
-    
-    return view('posts' , ['title' =>' Kriteria ' . $category->name, 'posts' => $category->posts , 'nama'=> 'mann']);
-}); 
+
+    return view('posts', ['title' => ' Kriteria ' . $category->name, 'posts' => $category->posts, 'nama' => 'mann']);
+});
