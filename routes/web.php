@@ -9,6 +9,8 @@ use App\Models\ProfilDtps;
 use App\Models\ProfilDtpr;
 use App\Http\Controllers\ProfilDtpsController;
 use App\Http\Controllers\ProfilDtprController;
+use App\Http\Controllers\RiwayatPendController;
+use App\Models\RiwayatPend;
 
 Route::get('/', function () {
     return view('home', ['title' => 'Home Page']);
@@ -42,7 +44,7 @@ Route::get('/posts', function () {
             [
                 'judul' => 'Riwayat Pendidikan DTPR',
                 'deskripsi' => 'Berisi mengenai data riwayat pendidikan Dosen Tetap Penghitung Rasio',
-                'slug' => 'riwayat-pendidikan-dtpr'
+                'slug' => 'riwayat-pendidikan'
             ],
             [
                 'judul' => 'Asosiasi Keanggotaan Dosen',
@@ -299,25 +301,6 @@ Route::get('/posts', function () {
         ]
     ]);
 });
-//  update
-Route::post('/profil-dtps', [ProfilDtpsController::class, 'store'])->name('profil-dtps.store');
-Route::put('/profil-dtps/{id}', [ProfilDtpsController::class, 'update'])->name('profil-dtps.update');
-Route::delete('/profil-dtps/{id}', [ProfilDtpsController::class, 'destroy'])->name('profil-dtps.destroy');
-
-use App\Http\Controllers\PoshtController;
-
-Route::get('/ps', [PoshtController::class, 'index'])->name('ps.index');
-Route::post('/ps', [PoshtController::class, 'store'])->name('ps.store');
-Route::put('/ps/{post}', [PoshtController::class, 'update'])->name('ps.update');
-Route::delete('/ps/{post}', [PoshtController::class, 'destroy'])->name('ps.destroy');
-
-
-// Route::resource('/profil-dtps', [ProfilDtpsController::class]);
-
-Route::get('/dokumen', function () {
-    return view('dokumen', ['title' => 'Dokumen Pendukung', 'nama' => 'maman']);
-});
-
 Route::get('/posts/{post:slug}', function (Post $post) {
     
     // $post = Post::find($id_kriteria);
@@ -325,6 +308,7 @@ Route::get('/posts/{post:slug}', function (Post $post) {
     return view('post' , ['title' => $post->title , 'post' => $post]);
 }); 
 
+//ProfilDTPS
 Route::get('/profil-dtps/{create:slug}', function (ProfilDtps $profilDtps) {    
     $data = ProfilDtps::latest()->get();
     
@@ -333,16 +317,46 @@ Route::get('/profil-dtps/{create:slug}', function (ProfilDtps $profilDtps) {
         'data' => $data,
     ]);
 });
+// create 
+Route::post('/profil-dtps', [ProfilDtpsController::class, 'store'])->name('profil-dtps.store');
+// update
+Route::put('/profil-dtps/{id}', [ProfilDtpsController::class, 'update'])->name('profil-dtps.update');
+// delete
+Route::delete('/profil-dtps/{id}', [ProfilDtpsController::class, 'destroy'])->name('profil-dtps.destroy');
+
+// profilDTPR
+Route::get('/profil-dtpr/create', [ProfilDTPRController::class, 'create'])->name('profil-dtpr.create');
+
 
 Route::get('/profil-dtpr/{create:slug}', function (ProfilDtpr $profilDtpr) {    
-    $data = ProfilDtpr::latest()->get()->toArray();
+    $data = ProfilDtpr::latest()->get();
     return view('profil-dtpr/create', data: [
         'title' => 'Profil DTPR',
         'data' => $data,
     ]);
 });
 
-Route::get('/profil-dtpr/create', [ProfilDTPRController::class, 'create'])->name('profil-dtpr.create');
+// Riwayat Pendidikan
+
+Route::get('/riwayat-pendidikan/{create:slug}', function (RiwayatPend $RiwayatPend) {    
+    // $data = RiwayatPend::latest()->get();
+    
+    return view('riwayat-pendidikan/create', data: [
+        'title' => 'Riwayat Pendidikan'
+        // 'data' => $data,
+    ]);
+});
+
+Route::get('/riwayat-pendidikan/create', [RiwayatPendController::class, 'index'])->name('riwayat-pendidikan.create');
+// create 
+Route::post('/riwayat-pendidikan', [RiwayatPendController::class, 'store'])->name('riwayat-pendidikan.store');
+// update
+Route::put('/riwayat-pendidikan/{id}', [RiwayatPendController::class, 'update'])->name('riwayat-pendidikan.update');
+// delete
+Route::delete('/riwayat-pendidikan/{id}', [RiwayatPendController::class, 'destroy'])->name('riwayat-pendidikan.destroy');
+
+
+
 
 Route::get('/authors/{user:username}', function (User $user) {
     // $post = $user->posts->load('author', 'category'); //lazy eager loading
@@ -354,14 +368,3 @@ Route::get('/categories/{category:slug}', function (Category $category) {
     
     return view('posts' , ['title' =>' Kriteria ' . $category->name, 'posts' => $category->posts , 'nama'=> 'mann']);
 }); 
-
-
-// Route::get('/profil_dtps/create', function () {
-//     return view('create', ['title' => 'Dokumen Pendukung']);
-// });
-
-//ProfilDTPS
-Route::get('profil-dtps/create', [ProfilDtpsController::class, 'create'])->name('profil-dtps.create');  
-// Route::post('profil_dtps/store.', [ProfilDtpsController::class, 'store'])->name('profil_dtps.store');
-
-// Route::get('/profil_dtps', [ProductController::class, 'index'])->name('products.index');

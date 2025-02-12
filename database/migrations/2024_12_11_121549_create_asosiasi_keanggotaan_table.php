@@ -13,10 +13,6 @@ return new class extends Migration
     {
         Schema::create('asosiasi_keanggotaan', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_dosen_dtpr');
-            $table->string('nidn')->unique();
-            $table->string('tanggal_lahir');
-            $table->string('bukti_sertifikasi');
             $table->timestamps();
         });
     }
